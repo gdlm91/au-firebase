@@ -23,7 +23,6 @@ export class AppComponent implements OnInit {
       .subscribe(course => this.lastCourse = course)
 
     this.lesson$ = this.af.database.object('lessons/-Kct1RSeJYXSUR7gHSV8');
-    this.lesson$.subscribe(console.log);
   }
 
   listPush() {

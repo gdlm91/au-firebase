@@ -1,0 +1,9 @@
+<h2>All Lessons</h2>
+
+<h4>Total Lessons: {{lessons?.length}}</h4>
+
+<input type="text" class="search-bar" placeholder="Search" (keyup)="search(q.value)" #q>
+
+<div class="lesson-list-container v-h-center-block-parent">
+  <lessons-list [lessons]="filtered"></lessons-list>
+</div>
