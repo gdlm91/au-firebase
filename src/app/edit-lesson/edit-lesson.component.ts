@@ -18,7 +18,6 @@ export class EditLessonComponent implements OnInit {
   ) {
 
     route.data
-      .do(console.log)
       .subscribe(
       data => this.lesson = data['lesson']
       )

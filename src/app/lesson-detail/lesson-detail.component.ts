@@ -39,7 +39,6 @@ export class LessonDetailComponent implements OnInit {
   }
 
   navigateToLesson(lesson: Lesson) {
-    console.log(lesson);
     this.router.navigate(['lessons', lesson.url]);
   }
 

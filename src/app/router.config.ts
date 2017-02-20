@@ -1,3 +1,5 @@
+import { RegisterComponent } from './register/register.component';
+import { LoginComponent } from './login/login.component';
 import { LessonResolver } from './shared/model/lesson.resolver';
 import { EditLessonComponent } from './edit-lesson/edit-lesson.component';
 import { NewLessonComponent } from './new-lesson/new-lesson.component';
@@ -6,6 +8,7 @@ import { HomeComponent } from './home/home.component';
 import { CoursesComponent } from './courses/courses.component';
 import { CourseDetailComponent } from './course-detail/course-detail.component';
 import { Route } from '@angular/router';
+import { AuthGuard } from './shared/security/auth.guard';
 
 export const routerConfig: Route[] = [
   {
@@ -38,17 +41,26 @@ export const routerConfig: Route[] = [
     path: 'lessons/:id',
     children: [
       {
-        path: '',
-        component: LessonDetailComponent
-      },
-      {
         path: 'edit',
         component: EditLessonComponent,
         resolve: {
           lesson: LessonResolver
         }
+      },
+      {
+        path: '',
+        component: LessonDetailComponent,
+        canActivate: [AuthGuard]
       }
     ]
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  {
+    path: 'register',
+    component: RegisterComponent
   },
   {
     path: '',
