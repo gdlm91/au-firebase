@@ -13,7 +13,8 @@ import { CoursesService } from './../shared/model/courses.service';
 export class CourseDetailComponent implements OnInit {
 
   course$: Observable<Course>;
-  lessons$: Observable<Lesson[]>;
+  courseUrl: string;
+  lessons: Lesson[];
 
   constructor(
     private route: ActivatedRoute,
@@ -21,11 +22,31 @@ export class CourseDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    const courseUrl = this.route.snapshot.params['id'];
+    this.courseUrl = this.route.snapshot.params['id'];
 
-    this.course$ = this.courseService.findCourseByUrl(courseUrl);
+    this.course$ = this.courseService.findCourseByUrl(this.courseUrl);
 
-    this.lessons$ = this.courseService.findLessonsForCourse(courseUrl);
+    const lessons$ = this.courseService.loadingFirstLessonsPage(this.courseUrl, 3);
+
+    lessons$.subscribe(lessons => this.lessons = lessons);
+  }
+
+  next() {
+    this.courseService.loadNextPage(
+      this.courseUrl,
+      this.lessons[this.lessons.length - 1].$key,
+      3
+    )
+      .subscribe(lessons => this.lessons = lessons);
+  }
+
+  prev() {
+    this.courseService.loadPrevPage(
+      this.courseUrl,
+      this.lessons[0].$key,
+      3
+    )
+      .subscribe(lessons => this.lessons = lessons);
   }
 
 }

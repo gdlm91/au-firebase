@@ -1,3 +1,4 @@
+import { LessonDetailComponent } from './lesson-detail/lesson-detail.component';
 import { Route } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { CoursesComponent } from './courses/courses.component';
