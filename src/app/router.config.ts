@@ -23,6 +23,10 @@ export const routerConfig: Route[] = [
     ]
   },
   {
+    path: 'lessons/:id',
+    component: LessonDetailComponent
+  },
+  {
     path: '',
     redirectTo: 'home',
     pathMatch: 'full'
