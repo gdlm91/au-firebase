@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import * as _ from 'lodash';
 import { Lesson } from './../shared/model/lesson';
 import { Course } from './../shared/model/course';
 import { CoursesService } from './../shared/model/courses.service';
