@@ -7,10 +7,10 @@ import { Lesson } from './lesson';
 @Injectable()
 export class LessonsService {
 
-  sdkDb: any;
+  fbDB: any;
 
-  constructor(private af: AngularFire, @Inject(FirebaseRef) fb) {
-    this.sdkDb = fb.database().ref();
+  constructor(private af: AngularFire, @Inject(FirebaseRef) fbRef) {
+    this.fbDB = fbRef.database().ref();
   }
 
   findAllLessons(): Observable<Lesson[]> {
@@ -57,7 +57,7 @@ export class LessonsService {
   createNewLesson(courseId: string, lesson: any): Observable<any> {
     const lessonToSave = Object.assign({}, lesson, { courseId });
 
-    const newLessonKey = this.sdkDb.child('lessons').push().key;
+    const newLessonKey = this.fbDB.child('lessons').push().key;
 
     let dataToSave = {}
 
@@ -69,7 +69,7 @@ export class LessonsService {
 
   saveLesson(lessonId: string, lesson: any): Observable<any> {
     const lessonToSave = Object.assign({}, lesson);
-    delete(lessonToSave.$key);
+    delete (lessonToSave.$key);
 
     let dataToSave = {};
     dataToSave[`lessons/${lessonId}`] = lessonToSave;
@@ -80,7 +80,7 @@ export class LessonsService {
   firebaseUpdate(dataToSave): Observable<any> {
     const subject = new Subject();
 
-    this.sdkDb.update(dataToSave)
+    this.fbDB.update(dataToSave)
       .then(
       val => {
         subject.next(val);
@@ -91,6 +91,25 @@ export class LessonsService {
         subject.complete();
       }
       );
+
+    return subject.asObservable();
+  }
+
+  deleteLesson(courseId, lessonId): Observable<any> {
+    const subject = new Subject();
+
+    this.af.database.object(`lessons/${lessonId}`).remove()
+      .then(() => {
+        return this.af.database.object(`lessonsPerCourse/${courseId}/${lessonId}`).remove()
+      })
+      .then(() => {
+        subject.next(true);
+        subject.complete();
+      })
+      .catch(err => {
+        subject.error(err);
+        subject.complete();
+      });
 
     return subject.asObservable();
   }
