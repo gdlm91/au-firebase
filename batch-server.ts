@@ -1,6 +1,6 @@
-
-import {firebaseConfig} from "./src/environments/firebase.config";
-import {initializeApp, auth,database} from 'firebase';
+import 'reflect-metadata';
+import { firebaseConfig } from "./src/environments/firebase.config";
+import { initializeApp, auth, database } from 'firebase';
 var Queue = require('firebase-queue');
 
 
@@ -9,63 +9,39 @@ console.log('Running batch server ...');
 initializeApp(firebaseConfig);
 
 auth()
-    .signInWithEmailAndPassword('admin@angular-university.io', 'test123')
-    .then(runConsumer)
-    .catch(onError);
+  .signInWithEmailAndPassword('gerardo.leal@descostudio.com', '123456')
+  .then(() => runConsumer())
+  .catch(onError)
 
 function onError(err) {
-    console.error("Could not login", err);
-    process.exit();
+  console.error("Could not login: ", err);
+  process.exit();
 }
-
 
 function runConsumer() {
+  console.log("Running Consumer...");
 
-    console.log("Running consumer ...");
+  const lessonsRef = database().ref('lessons');
+  const lessonsPerCourseRef = database().ref('lessonsPerCourse');
+  const queueRef = database().ref("queue");
 
-    const lessonsRef = database().ref("lessons");
-    const lessonsPerCourseRef = database().ref("lessonsPerCourse");
+  const queue = new Queue(queueRef, function (data, progress, resolve, reject) {
 
-    const queueRef = database().ref('queue');
+    console.log("Data: ", data);
 
-
-    const queue = new Queue(queueRef, function(data, progress, resolve, reject) {
-
-        console.log('received delete request ...',data);
-
-        const deleteLessonPromise = lessonsRef.child(data.lessonId).remove();
-
-        const deleteLessonPerCoursePromise =
-            lessonsPerCourseRef.child(`${data.courseId}/${data.lessonId}`).remove();
-
-        Promise.all([deleteLessonPromise, deleteLessonPerCoursePromise])
-            .then(
-                () => {
-                    console.log("lesson deleted");
-                    resolve();
-                }
-            )
-            .catch(() => {
-            console.log("lesson deletion in error");
-            reject();
-        });
-
-
-    });
-
-
+    lessonsRef.child(data.lessonId).remove()
+      .then(() => {
+        return lessonsPerCourseRef.child(`${data.courseId}/${data.lessonId}`).remove();
+      })
+      .then(() => {
+        console.log("Lesson Deleted");
+        resolve();
+        process.exit();
+      })
+      .catch(err => {
+        console.log("Lesson deletion failed, ", err);
+        reject();
+        process.exit();
+      })
+  })
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

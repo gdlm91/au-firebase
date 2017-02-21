@@ -46,7 +46,7 @@ export class LessonDetailComponent implements OnInit {
     this.router.navigate(['lessons', lesson.url]);
   }
 
-  delete() {
+  /*delete() {
     const courseId = this.lesson.courseId;
 
     this.paramsSubs.unsubscribe();
@@ -58,6 +58,13 @@ export class LessonDetailComponent implements OnInit {
           console.error(err);
           this.paramsSubs = this.params$.subscribe(lesson => this.lesson = lesson);
         }
+      );
+  }*/
+
+  delete() {
+    this.lessonService.requestLessonDeletion(this.lesson.courseId, this.lesson.$key)
+      .then(
+        () => alert('Lesson deletion reuqested')
       );
   }
 

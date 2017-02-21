@@ -9,7 +9,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "populate-db": "ts-node ./populate-db.ts"
+    "populate-db": "ts-node ./populate-db.ts",
+    "batch-server": "ts-node ./batch-server.ts"
   },
   "private": true,
   "dependencies": {

@@ -114,4 +114,8 @@ export class LessonsService {
     return subject.asObservable();
   }
 
+  requestLessonDeletion(courseId: string, lessonId: string): Promise<any> {
+    return this.fbDB.child('queue/tasks').push({lessonId, courseId});
+  }
+
 }
